@@ -3,6 +3,8 @@
     home = {
         packages = with pkgs; [
             hello
+            cowsay
+            lolcat
         ];
 
         username = "aleksandr-kiusev";
