@@ -12,4 +12,19 @@
 
         stateVersion = "25.05";
     };
+
+
+    programs.neovim = {
+        enable = true;
+
+        extraLuaPackages = ps: [
+            ps.lyaml
+            ps.xml2lua
+            ps.mimetypes
+        ];
+
+        extraPackages = with pkgs; [
+            luajitPackages.lyaml
+        ];
+    };
 }
