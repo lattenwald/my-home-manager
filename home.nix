@@ -14,6 +14,10 @@
       grpcurl
       k9s
       luarocks
+
+      glow
+      lazygit
+      aws-iam-authenticator
     ];
 
     username = "aleksandr-kiusev";
