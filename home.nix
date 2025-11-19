@@ -5,7 +5,15 @@
       hello
       cowsay
       lolcat
+
       nixpkgs-fmt
+
+      asdf-vm
+      duf
+      grpcui
+      grpcurl
+      k9s
+      luarocks
     ];
 
     username = "aleksandr-kiusev";

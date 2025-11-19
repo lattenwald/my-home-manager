@@ -8,6 +8,10 @@ help:
 update: ## Apply home-manager configuration
 	home-manager switch --flake .#myProfile
 
+.PHONY: upgrade
+upgrade: ## Update flake inputs and apply changes
+	nix flake update && home-manager switch --flake .#myProfile
+
 .PHONY: clean
 clean: ## Run garbage collection
 	nix-collect-garbage -d
