@@ -19,3 +19,7 @@ clean: ## Run garbage collection
 .PHONY: fmt
 fmt: ## Format all .nix files with nixpkgs-fmt
 	nixpkgs-fmt .
+
+.PHONY: lint
+lint: ## Lint all .nix files with statix
+	statix check .

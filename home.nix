@@ -15,6 +15,7 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
 
       nil
       nixpkgs-fmt
+      statix
 
       asdf-vm
       duf
