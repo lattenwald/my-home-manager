@@ -1,0 +1,130 @@
+''
+  # Show latest stack lts
+  stack_lts() {
+      curl -v https://www.stackage.org/lts 2>&1 | grep Location | sed 's/.*\///'
+  }
+
+  # Get LAN IP address
+  lanip() {
+      ip -4 addr show $(ip route get 8.8.8.8 | awk '{for(i=1;i<=NF;i++) if ($i=="dev") print $(i+1); exit}') | awk '/inet / {print $2}' | cut -d/ -f1
+  }
+
+  # Unregister broken GHC packages
+  ghc-pkg-clean() {
+      for p in `ghc-pkg check $* 2>&1  | grep problems | awk '{print $6}' | sed -e 's/:$//'`
+      do
+          echo unregistering $p; ghc-pkg $* unregister $p
+      done
+  }
+
+  # Remove all installed GHC/cabal packages
+  ghc-pkg-reset() {
+      read '?erasing all your user ghc and cabal packages - are you sure (y/n) ? ' ans
+      test "x$ans" = xy && ( \
+          echo 'erasing directories under ~/.ghc'; rm -rf `find ~/.ghc -maxdepth 1 -type d`; \
+          echo 'erasing ~/.cabal/lib'; rm -rf ~/.cabal/lib; \
+          )
+  }
+
+  # Show colors
+  zsh_colors() {
+      for COLOR in $(seq 0 255)
+      do
+          for STYLE in "38;5"
+          do
+              TAG="\033[$${STYLE};$${COLOR}m"
+              STR="$${STYLE};$${COLOR}"
+              echo -ne "$${TAG}$${STR}$${NONE}  "
+          done
+          echo
+      done
+  }
+
+  # Text to speech
+  say() {
+    if [[ "$${1}" =~ -[a-z]{2} ]]
+    then
+      local lang=$${1#-}
+      local text="$${*#$1}"
+    else
+      local lang=$${LANG%_*}
+      local text="$*"
+    fi
+    mplayer "http://translate.google.com/translate_tts?ie=UTF-8&tl=$${lang}&q=$${text}" &> /dev/null
+  }
+
+  # Run command in first docker-compose service
+  drun() {
+      service=`cat docker-compose.yml | sed "0,/^services:/d" | head -1 | sed 's/:[[:space:]]*$//;s/^[[:space:]]*//'`
+      docker-compose run $service $@
+  }
+
+  # Git: merge current branch to specified branch
+  mergeto() {
+      from=`git symbolic-ref --short HEAD`
+      git co $* && git merge $from
+  }
+
+  # File transfer using transfer.sh
+  transfer() {
+      if [ $# -eq 0 ]; then
+          echo -e "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md"
+          return 1
+      fi
+      tmpfile=$( mktemp -t transferXXX )
+      if tty -s; then
+          basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
+          curl --progress-bar --upload-file "$1" "https://transfer.sh/$basefile" >> $tmpfile
+      else
+          curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile
+      fi
+      cat $tmpfile
+      rm -f $tmpfile
+  }
+
+  # Search files with fzf and ripgrep
+  sf() {
+      if [ "$#" -lt 1 ]; then echo "Supply string to search for!"; return 1; fi
+      printf -v search "%q" "$*"
+      include="yml,js,json,php,md,styl,pug,jade,html,config,py,cpp,c,go,hs,rb,conf,fa,lst,erl,ex,exs,pl,pm,config,conf,src"
+      exclude=".config,.git,node_modules,vendor,build,yarn.lock,*.sty,*.bst,*.coffee,dist"
+      rg_command='rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --color "always" -g "*.{'$include'}" -g "!{'$exclude'}/*"'
+      files=`eval $rg_command $search | fzf --ansi --multi --reverse | awk -F ':' '{print "+"$2":"$3" "$1}'`
+      [[ -n "$files" ]] && $EDIT $files
+  }
+
+  # Search files everywhere with fzf and ripgrep
+  sfe() {
+      if [ "$#" -lt 1 ]; then echo "Supply string to search for!"; return 1; fi
+      printf -v search "%q" "$*"
+      rg_command='rg --column --line-number --no-heading --ignore-case --no-ignore --hidden --follow --color "always"'
+      files=`eval $rg_command $search | fzf --ansi --multi --reverse | awk -F ':' '{print "+"$2":"$3" "$1}'`
+      echo "$EDIT $files $"
+      $EDIT $files
+  }
+
+  # Ripgrep with delta
+  rr() {
+      rg --json "$@" | delta
+  }
+
+  # View SSL certificate
+  view_cert() {
+      readonly host=$${1:?"The host must be specified."}
+      readonly port=$${2:-"443"}
+      echo certificate at $host:$port
+      openssl s_client -CApath /etc/ssl/certs/ -showcerts -servername $host -connect $host:$port </dev/null | openssl x509 -text
+  }
+
+  # AWS login helper function
+  _aws_login_with_venv() {
+      local prev_venv="$VIRTUAL_ENV"
+      source ~/ringcentral/aws_authenticator/venv/bin/activate
+      source ~/ringcentral/aws_authenticator/bin/aws_init.sh "$@"
+      if [[ -n "$prev_venv" ]]; then
+          source "$prev_venv/bin/activate"
+      else
+          deactivate
+      fi
+  }
+''

@@ -7,6 +7,10 @@ assert lib.assertMsg (username != "") "USER environment variable is not set";
 assert lib.assertMsg (homeDirectory != "") "HOME environment variable is not set";
 assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeDirectory} does not exist";
 {
+  imports = [
+    ./modules/shell/zsh.nix
+  ];
+
   home = {
     packages = with pkgs; [
       hello
