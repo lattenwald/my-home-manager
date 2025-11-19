@@ -1,30 +1,32 @@
 { lib, pkgs, ... }:
 {
-    home = {
-        packages = with pkgs; [
-            hello
-            cowsay
-            lolcat
-        ];
+  home = {
+    packages = with pkgs; [
+      hello
+      cowsay
+      lolcat
+      nixpkgs-fmt
+    ];
 
-        username = "aleksandr-kiusev";
-        homeDirectory = "/home/aleksandr-kiusev";
+    username = "aleksandr-kiusev";
+    homeDirectory = "/home/aleksandr-kiusev";
 
-        stateVersion = "25.05";
-    };
+    stateVersion = "25.05";
+  };
 
 
-    programs.neovim = {
-        enable = true;
+  programs.neovim = {
+    enable = true;
 
-        extraLuaPackages = ps: [
-            ps.lyaml
-            ps.xml2lua
-            ps.mimetypes
-        ];
+    extraLuaPackages = ps: [
+      ps.lyaml
+      ps.xml2lua
+      ps.mimetypes
+    ];
 
-        extraPackages = with pkgs; [
-            luajitPackages.lyaml
-        ];
-    };
+    extraPackages = with pkgs; [
+      luajitPackages.lyaml
+      nil
+    ];
+  };
 }

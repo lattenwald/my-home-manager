@@ -11,3 +11,7 @@ update: ## Apply home-manager configuration
 .PHONY: clean
 clean: ## Run garbage collection
 	nix-collect-garbage -d
+
+.PHONY: fmt
+fmt: ## Format all .nix files with nixpkgs-fmt
+	nixpkgs-fmt .
