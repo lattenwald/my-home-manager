@@ -6,6 +6,7 @@
       cowsay
       lolcat
 
+      nil
       nixpkgs-fmt
 
       asdf-vm
@@ -18,6 +19,8 @@
       glow
       lazygit
       aws-iam-authenticator
+
+      luajitPackages.jsregexp
     ];
 
     username = "aleksandr-kiusev";
@@ -34,11 +37,7 @@
       ps.lyaml
       ps.xml2lua
       ps.mimetypes
-    ];
-
-    extraPackages = with pkgs; [
-      luajitPackages.lyaml
-      nil
+      ps.jsregexp
     ];
   };
 }
