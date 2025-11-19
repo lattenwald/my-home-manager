@@ -15,6 +15,11 @@ nix-channel --update
 nix-shell '<home-manager>' -A install
 ```
 
+**Add to `.bashrc` or `.zshrc`:**
+```bash
+source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+```
+
 ## Usage
 
 ```bash
