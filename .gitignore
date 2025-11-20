@@ -1,0 +1,12 @@
+# Navigator context markers
+.context-markers/
+
+# Navigator temporary files
+.agent/.nav-temp/
+
+# Home Manager result symlinks
+result
+result-*
+
+# Nix build outputs
+.direnv/

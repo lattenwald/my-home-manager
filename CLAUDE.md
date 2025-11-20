@@ -1,0 +1,142 @@
+# Claude Code Instructions for My Home Manager
+
+## Project Overview
+
+This is a declarative Home Manager configuration using Nix flakes. The configuration manages user environment, shell setup (Zsh), and packages across systems with dynamic user detection for portability.
+
+## Navigator Workflow
+
+### Starting a Session
+
+When starting work on this project:
+1. Read `.agent/DEVELOPMENT-README.md` for current state
+2. Check `.agent/tasks/` for active tasks
+3. Review git status to see uncommitted work
+
+### Task Management
+
+- **Create tasks**: "Create task for [feature/bug/refactor]"
+- **List tasks**: "Show my tasks"
+- **Archive completed**: "Archive completed tasks"
+
+Tasks are stored in `.agent/tasks/` as markdown with implementation plans.
+
+### Standard Procedures (SOPs)
+
+Document recurring procedures in `.agent/sops/`:
+- **integrations/**: Setting up external tools
+- **debugging/**: Troubleshooting common issues
+- **development/**: Development workflows
+- **deployment/**: Release processes
+
+Create SOP: "Document this solution" or "Create SOP for [topic]"
+
+### Context Management
+
+- **Save checkpoint**: "Create checkpoint" before risky changes
+- **Clear context**: "Clear context" when switching tasks
+- **Resume work**: Context automatically restored from markers
+
+## Development Guidelines
+
+### Code Quality
+
+1. **Always format before committing**: `make fmt`
+2. **Always lint before committing**: `make lint`
+3. **Test incrementally**: Use `make update` after each change
+4. **Commit frequently**: Track configuration changes in git
+
+### Nix/Home Manager Specifics
+
+- **Flakes only see git-tracked files**: Always `git add` new modules before testing
+- **Use --impure flag**: Required for dynamic user detection via `builtins.getEnv`
+- **Prefer declarative**: Add packages to `home.packages`, not imperative `nix-env -i`
+- **Modular organization**: Keep related config in separate module files
+
+### Configuration Changes
+
+When modifying configuration:
+1. Edit files (home.nix, modules/*)
+2. Format: `make fmt`
+3. Lint: `make lint`
+4. Apply: `make update`
+5. Test in new terminal
+6. Commit changes
+
+### Adding Packages
+
+Add to `home.packages` in home.nix:
+```nix
+home.packages = with pkgs; [
+  new-package
+];
+```
+
+### Creating Modules
+
+1. Create file in `modules/` directory
+2. Import in home.nix:
+   ```nix
+   imports = [
+     ./modules/your-module.nix
+   ];
+   ```
+3. Git add the new file
+4. Apply with `make update`
+
+## Troubleshooting
+
+### Common Issues
+
+**Configuration fails to apply**:
+- Check syntax: `make lint`
+- Verify paths are correct
+- Ensure modules are git-tracked
+
+**Packages not available**:
+- Run `make update` to apply
+- Check PATH includes nix directories
+- Verify package exists in nixpkgs
+
+**Shell changes not working**:
+- Open new terminal after update
+- Check zsh module for errors
+- Verify `~/.zshrc` symlink
+
+**Flake can't find files**:
+- Git add new files first
+- Flakes require git tracking
+
+### Debug Mode
+
+Enable verbose output:
+```bash
+home-manager switch --impure --flake .#myProfile --show-trace
+```
+
+## Key Files
+
+- **flake.nix**: Flake configuration (inputs, outputs)
+- **home.nix**: Main Home Manager config (packages, programs)
+- **modules/shell/zsh.nix**: Zsh configuration (367 lines)
+- **modules/shell/zsh-aliases.nix**: Shell aliases (55+)
+- **modules/shell/zsh-functions.nix**: Custom functions (130 lines)
+- **Makefile**: Convenience commands (update, upgrade, fmt, lint, clean)
+
+## Makefile Targets
+
+```bash
+make update   # Apply home-manager configuration
+make upgrade  # Update flake inputs and apply
+make fmt      # Format all .nix files
+make lint     # Lint all .nix files
+make clean    # Garbage collection
+make help     # Show all targets
+```
+
+## Resources
+
+- [Home Manager Manual](https://nix-community.github.io/home-manager/)
+- [Home Manager Options](https://mynixos.com/home-manager/options)
+- [NixOS Wiki](https://nixos.wiki/)
+- Navigator documentation: `.agent/DEVELOPMENT-README.md`
