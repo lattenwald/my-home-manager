@@ -127,4 +127,28 @@
           deactivate
       fi
   }
+
+  # Arch Linux specific functions
+  if [[ -f /etc/arch-release ]]; then
+    # Import and sign pacman keys
+    pacman-import-keys() {
+        if [ $# -eq 0 ]; then
+            echo "Usage: pacman-import-keys KEY1 KEY2 KEY3 ..."
+            return 1
+        fi
+
+        for key in "$@"; do
+            echo "==> Importing key: $key"
+
+            if curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x$${key}" | \
+               sudo gpg --homedir /etc/pacman.d/gnupg --import 2>&1 | grep -v "unsafe permissions"; then
+                echo "==> Locally signing key: $key"
+                sudo pacman-key --lsign-key "$key" 2>&1 | grep -v "unsafe permissions" || echo "==> Warning: Failed to sign $key"
+            else
+                echo "==> Error: Failed to import $key"
+            fi
+            echo
+        done
+    }
+  fi
 ''
