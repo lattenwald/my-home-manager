@@ -138,15 +138,21 @@
         fi
 
         for key in "$@"; do
-            echo "==> Importing key: $key"
+            echo "==> Downloading key: $key"
+            local keydata=$(curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x$${key}")
 
-            if curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x$${key}" | \
-               sudo gpg --homedir /etc/pacman.d/gnupg --import 2>&1 | grep -v "unsafe permissions"; then
-                echo "==> Locally signing key: $key"
-                sudo pacman-key --lsign-key "$key" 2>&1 | grep -v "unsafe permissions" || echo "==> Warning: Failed to sign $key"
-            else
-                echo "==> Error: Failed to import $key"
+            if [ -z "$keydata" ]; then
+                echo "==> Error: Failed to download $key"
+                continue
             fi
+
+            echo "==> Importing to system keyring"
+            echo "$keydata" | sudo gpg --homedir /etc/pacman.d/gnupg --import 2>&1 | grep -v "unsafe permissions"
+            sudo pacman-key --lsign-key "$key" 2>&1 | grep -v "unsafe permissions"
+
+            echo "==> Importing to user keyring"
+            echo "$keydata" | gpg --import
+
             echo
         done
     }
