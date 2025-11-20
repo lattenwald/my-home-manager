@@ -10,3 +10,5 @@ result-*
 
 # Nix build outputs
 .direnv/
+
+.agent/

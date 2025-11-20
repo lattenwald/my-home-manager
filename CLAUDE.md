@@ -39,6 +39,15 @@ Create SOP: "Document this solution" or "Create SOP for [topic]"
 
 ## Development Guidelines
 
+### Git Workflow
+
+**IMPORTANT**: Never use `git add` or `git stage` commands automatically. Always ask the user before staging files.
+
+When changes are ready to commit:
+1. Show `git status` and `git diff --stat` to the user
+2. Ask which files should be staged
+3. Wait for user to stage files manually or give explicit permission
+
 ### Code Quality
 
 1. **Always format before committing**: `make fmt`
@@ -48,7 +57,7 @@ Create SOP: "Document this solution" or "Create SOP for [topic]"
 
 ### Nix/Home Manager Specifics
 
-- **Flakes only see git-tracked files**: Always `git add` new modules before testing
+- **Flakes only see git-tracked files**: New modules must be git-tracked before testing (user handles staging)
 - **Use --impure flag**: Required for dynamic user detection via `builtins.getEnv`
 - **Prefer declarative**: Add packages to `home.packages`, not imperative `nix-env -i`
 - **Modular organization**: Keep related config in separate module files
@@ -81,7 +90,7 @@ home.packages = with pkgs; [
      ./modules/your-module.nix
    ];
    ```
-3. Git add the new file
+3. Ask user to git-track the new file (required for flakes)
 4. Apply with `make update`
 
 ## Troubleshooting
@@ -104,8 +113,8 @@ home.packages = with pkgs; [
 - Verify `~/.zshrc` symlink
 
 **Flake can't find files**:
-- Git add new files first
-- Flakes require git tracking
+- Ask user to git-track new files
+- Flakes require git tracking for all modules
 
 ### Debug Mode
 
