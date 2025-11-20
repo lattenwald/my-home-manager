@@ -32,7 +32,7 @@
     # Shell aliases
     shellAliases = import ./zsh-aliases.nix;
 
-    # Session variables (exported environment variables)
+    # Session variables
     sessionVariables = {
       EDIT = "nvim";
       RSYNC_RSH = "ssh";
@@ -65,13 +65,26 @@
 
       # PATH additions
       _paths=( \
-          "$HOME/.asdf/shims/" "/snap/bin" "/usr/local/sbin" "/usr/lib/smlnj/bin" "/usr/local/lib/node_modules/purescript/vendor" \
-          "$HOME/.cabal/bin" "$HOME/.cargo/bin" "/opt/telegram/bin" "$GOPATH" "$GOPATH/bin" \
-          "$HOME/.local/bin" "$HOME/local/bin" "$HOME/.bin" "$HOME/bin" "$HOME/Android/Sdk/tools/bin/" "$HOME/.gem/ruby/2.5.0/bin" \
-          "$HOME/.ghcup/bin" "$HOME/.config/gem/ruby/3.0.0/bin" "/opt/appimages" "$HOME/flutter/bin" "$HOME/.foundry/bin" \
-          "$HOME/.lmstudio/bin" "$HOME/Applications/" \
-          "$HOME/gopath/bin" "$HOME/.bun/bin" "$HOME/.config/nvim/mason/bin" "$HOME/.dotnet/tools" \
-          "/nix/var/nix/profiles/default/bin" "$HOME/.nix-profile/bin"
+          "$HOME/.local/bin" "$HOME/local/bin" "$HOME/.bin" "$HOME/bin" \
+          "$HOME/.nix-profile/bin" "/nix/var/nix/profiles/default/bin" \
+          "$HOME/.asdf/shims" \
+          "$HOME/.cargo/bin" \
+          "$HOME/.bun/bin" \
+          "$HOME/.node_modules/bin" \
+          "$HOME/.cabal/bin" \
+          "$HOME/.ghcup/bin" \
+          "$HOME/.config/nvim/mason/bin" \
+          "$HOME/.dotnet/tools" \
+          "$HOME/.foundry/bin" \
+          "$HOME/.lmstudio/bin" \
+          "$HOME/Applications" \
+          "$GOPATH" "$GOPATH/bin" \
+          "/snap/bin" \
+          "/usr/local/sbin" \
+          "/usr/lib/smlnj/bin" \
+          "/usr/local/lib/node_modules/purescript/vendor" \
+          "/opt/telegram/bin" \
+          "/opt/appimages" \
       )
 
       for _dir in "''${_paths[@]}"; do
@@ -86,18 +99,6 @@
 
     # Profile extra (.zprofile)
     profileExtra = ''
-      typeset -U path
-      _paths=("/snap/bin" "/usr/local/sbin" "$HOME/.local/bin" "$HOME/local/bin" "$HOME/.bin" "$HOME/bin" \
-                          "/usr/lib/smlnj/bin" "/usr/local/lib/node_modules/purescript/vendor" "$HOME/.cabal/bin" \
-                          "$HOME/.cargo/bin" "/opt/telegram/bin" "$HOME/.node_modules/bin")
-
-      for _dir in $_paths; do
-        if [[ -z "''${path[(r)$_dir]}" ]]; then
-          path+=( $_dir )
-        fi
-      done
-
-      unset _paths
       export npm_config_prefix=~/.node_modules
     '';
 
@@ -114,7 +115,7 @@
         )
       '')
 
-      # Main configuration (default order)
+      # Main configuration
       ''
         # If not running interactively, don't do anything
         [ -z "$PS1" ] && return
@@ -239,7 +240,7 @@
         compdef _uv_run_mod uv
 
         # ------------------------------------------------------------------------------
-        # Prompt - Handled by Starship (configured in programs.starship)
+        # Prompt - Handled by Starship
         # ------------------------------------------------------------------------------
 
         # Window title in terminal
