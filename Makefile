@@ -5,11 +5,15 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: update
-update: ## Apply home-manager configuration
+update: completions ## Apply home-manager configuration
 	home-manager switch --impure --flake .#myProfile
 
+.PHONY: completions
+completions: ## Generate shell completions for installed tools
+	@bash scripts/generate-completions.sh
+
 .PHONY: upgrade
-upgrade: ## Update flake inputs and apply changes
+upgrade: completions ## Update flake inputs and apply changes
 	nix flake update && home-manager switch --impure --flake .#myProfile
 
 .PHONY: clean

@@ -1,6 +1,11 @@
 { config, pkgs, lib, ... }:
 
 {
+  # Generate shell completions during activation
+  home.activation.generateZshCompletions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${pkgs.bash}/bin/bash ${../../scripts/generate-completions.sh}
+  '';
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -217,13 +222,8 @@
         # Initialize bash completion compatibility
         autoload -U +X bashcompinit && bashcompinit
 
-        # Tool-specific completions
-        if which stack >/dev/null 2>&1; then
-            eval "$(stack --bash-completion-script "$(which stack)")"
-        fi
-
+        # Tool-specific completions (pre-generated during activation)
         [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-        [ -f /usr/bin/leetcode ] && eval $(leetcode completions)
 
         # Fix completions for: uv run <file.py>
         _uv_run_mod() {
