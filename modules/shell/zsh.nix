@@ -221,7 +221,7 @@
             eval "$(stack --bash-completion-script "$(which stack)")"
         fi
 
-        [ -s "/home/aleksandr-kiusev/.bun/_bun" ] && source "/home/aleksandr-kiusev/.bun/_bun"
+        [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
         [ -f /usr/bin/leetcode ] && eval $(leetcode completions)
 
         # Fix completions for: uv run <file.py>
@@ -239,79 +239,13 @@
         compdef _uv_run_mod uv
 
         # ------------------------------------------------------------------------------
-        # Prompt
+        # Prompt - Handled by Starship (configured in programs.starship)
         # ------------------------------------------------------------------------------
 
-        autoload -U colors
-        colors
-
-        # Git status function
-        function +vi-git-st() {
-            local ahead behind remote gitstatus stashcnt
-            stashcnt=''${$(git stash list 2> /dev/null | wc -l)}
-            if [ "$stashcnt" != "0" ]; then
-                hook_com[misc]+="<$stashcnt>"
-            fi
-
-            remote=''${$(git rev-parse --verify ''${hook_com[branch]}@{upstream} \
-                --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
-            if [[ -n ''${remote} ]] ; then
-                behind=$(git rev-list HEAD..''${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
-                (( $behind )) && gitstatus+="<"
-
-                ahead=$(git rev-list ''${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
-                (( $ahead )) && gitstatus+=">"
-
-                if [ -n "''${gitstatus}" ]; then
-                    hook_com[misc]+=$gitstatus
-                else
-                    hook_com[misc]+='='
-                fi
-            fi
-        }
-
-        autoload -Uz vcs_info
-        zstyle ':vcs_info:*+*:*' debug false
-        zstyle ':vcs_info:*' enable git hg
-        zstyle ':vcs_info:*' stagedstr '+'
-        zstyle ':vcs_info:*' unstagedstr '*'
-        zstyle ':vcs_info:*' check-for-changes on
-        zstyle ':vcs_info:git*:*' get-revision true
-        zstyle ':vcs_info:git*' actionformats "(%s|%a) %12.12i %c%u %b%m"
-        zstyle ':vcs_info:*' formats '%F{4}%s [%b%u%c%m]'
-        zstyle ':vcs_info:git*+set-message:*' hooks git-st
-
+        # Window title in terminal
         precmd() {
-            vcs_info
             print -Pn "\e]0;%n@%m: %~\a"
         }
-
-        function cabal_sandbox_info() {
-            if [[ -f *.cabal ]]; then
-                if [ -f cabal.sandbox.config ]; then
-                    echo " %{$fg[green]%}[cabal]%{$reset_color%}"
-                else
-                    echo " %{$fg[red]%}[cabal]%{$reset_color%}"
-                fi
-            fi
-        }
-
-        function wine_prefix_info() {
-            if [ -n "$WINEPREFIX" ]; then
-                echo " %{$fg[yellow]%}wine:''${WINEPREFIX/#"$HOME"/"~"}%{$reset_color%}"
-            fi
-        }
-
-        function ssh_dependent_color() {
-            if [ -n "$SSH_TTY" ]; then
-                echo "%{$fg_bold[yellow]%}"
-            else
-                echo "%{$fg_bold[green]%}"
-            fi
-        }
-
-        PROMPT='$reset_color%* $(ssh_dependent_color)%n@%m$fg_no_bold[white]:$fg_bold[blue]%~%b$(cabal_sandbox_info) ''${vcs_info_msg_0_}$(wine_prefix_info)
-        %f%# '
 
         # ------------------------------------------------------------------------------
         # Functions
@@ -363,5 +297,78 @@
         (( ''${+aliases[run-help]} )) && unalias run-help
       ''
     ];
+  };
+
+  # Starship prompt - modern, fast, async
+  programs.starship = {
+    enable = true;
+
+    settings = {
+      format = lib.concatStrings [
+        "$time"
+        "$username"
+        "$hostname"
+        "$directory"
+        "$git_branch"
+        "$git_status"
+        "$line_break"
+        "$character"
+      ];
+
+      add_newline = true;
+
+      time = {
+        disabled = false;
+        format = "[$time]($style) ";
+        time_format = "%T";
+        style = "white";
+      };
+
+      username = {
+        show_always = true;
+        format = "[$user]($style)";
+        style_user = "bold green";
+        style_root = "bold red";
+      };
+
+      hostname = {
+        ssh_only = false;
+        format = "[@$hostname]($style):";
+        style = "bold green";
+        ssh_symbol = "@";
+      };
+
+      directory = {
+        format = "[$path]($style) ";
+        style = "bold blue";
+        truncation_length = 0;
+        truncate_to_repo = false;
+      };
+
+      git_branch = {
+        format = "[$symbol$branch]($style)";
+        style = "blue";
+        symbol = "";
+      };
+
+      git_status = {
+        format = "([$all_status$ahead_behind]($style)) ";
+        style = "blue";
+        ahead = ">";
+        behind = "<";
+        diverged = "<>";
+        stashed = "<\${count}>";
+        modified = "*";
+        staged = "+";
+        untracked = "";
+        deleted = "";
+        renamed = "";
+      };
+
+      character = {
+        success_symbol = "[%](bold white)";
+        error_symbol = "[%](bold red)";
+      };
+    };
   };
 }
