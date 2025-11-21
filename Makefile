@@ -4,6 +4,10 @@
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: install
+install: ## First-time install: bootstrap home-manager via flake
+	nix run home-manager -- switch --impure --flake .#myProfile
+
 .PHONY: update
 update: completions ## Apply home-manager configuration
 	home-manager switch --impure --flake .#myProfile

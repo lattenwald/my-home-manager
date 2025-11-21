@@ -7,17 +7,12 @@
 sh <(curl -L https://nixos.org/nix/install) --daemon
 ```
 
-## Install Home Manager
+## Setup
 
 ```bash
-nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
-nix-channel --update
-nix-shell '<home-manager>' -A install
-```
-
-**Add to `.bashrc` or `.zshrc`:**
-```bash
-source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+git clone <this-repo> ~/my-home-manager
+cd ~/my-home-manager
+make install   # First-time bootstrap
 ```
 
 ## Usage
@@ -26,6 +21,7 @@ source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
 make update   # Apply configuration
 make upgrade  # Update packages and apply
 make fmt      # Format .nix files
+make lint     # Lint .nix files
 make clean    # Run garbage collection
 make help     # Show all targets
 ```
