@@ -18,12 +18,9 @@ make install   # First-time bootstrap
 ## Usage
 
 ```bash
-make update   # Apply configuration
-make upgrade  # Update packages and apply
-make fmt      # Format .nix files
-make lint     # Lint .nix files
-make clean    # Run garbage collection
-make help     # Show all targets
+make           # Apply configuration (default)
+make upgrade   # Update flake inputs and apply
+make help      # Show all targets
 ```
 
 <details>
