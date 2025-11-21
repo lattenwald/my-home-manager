@@ -35,7 +35,7 @@
     '';
 
     # Auto-install Navigator plugin if missing
-    activation.claudeCodePlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    activation.claudeCodePlugins = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
       run=${pkgs.writeShellScript "claude-plugins" ''
         # Source profile to get PATH
         [ -f "$HOME/.profile" ] && . "$HOME/.profile"
@@ -51,8 +51,10 @@
         # Check if Navigator plugin is installed
         if [ ! -f "$plugins_file" ] || \
            ! ${pkgs.jq}/bin/jq -e '.plugins["navigator@navigator-marketplace"]' "$plugins_file" &>/dev/null; then
+          echo "Adding Navigator marketplace..."
+          claude plugin marketplace add alekspetrov/navigator || true
           echo "Installing Navigator plugin..."
-          claude plugins install navigator@navigator-marketplace || true
+          claude plugin install navigator@navigator-marketplace || true
         fi
       ''}
       $DRY_RUN_CMD $run
