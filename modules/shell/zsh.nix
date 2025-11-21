@@ -359,6 +359,7 @@
           "$time"
           "$username"
           "$hostname"
+          "\${custom.ssh_prompt}"
           "$directory"
           "$git_branch"
           "$git_status"
@@ -380,13 +381,22 @@
           format = "[$user]($style)";
           style_user = "bold green";
           style_root = "bold red";
+          detect_env_vars = [ "!SSH_CONNECTION" ]; # Hide when SSH
         };
 
         hostname = {
           ssh_only = false;
           format = "[@$hostname]($style):";
           style = "bold green";
-          ssh_symbol = "@";
+          detect_env_vars = [ "!SSH_CONNECTION" ]; # Hide when SSH
+        };
+
+        # Yellow user@host when connected via SSH
+        custom.ssh_prompt = {
+          when = ''test -n "$SSH_CONNECTION"'';
+          format = "[$output]($style):";
+          command = ''echo "$USER@$(hostname)"'';
+          style = "bold yellow";
         };
 
         directory = {
