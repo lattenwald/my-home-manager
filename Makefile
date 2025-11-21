@@ -31,3 +31,7 @@ fmt: ## Format all .nix files with nixpkgs-fmt
 .PHONY: lint
 lint: ## Lint all .nix files with statix
 	statix check .
+
+.PHONY: news
+news: ## Show home-manager news
+	home-manager --impure --flake .#myProfile news
