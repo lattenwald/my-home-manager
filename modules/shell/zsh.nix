@@ -261,8 +261,30 @@
         # dnvm
         [ -s "$HOME/.dnx/dnvm/dnvm.sh" ] && . "$HOME/.dnx/dnvm/dnvm.sh"
 
-        # scm_breeze
-        [ -s "$HOME/.scm_breeze/scm_breeze.sh" ] && source "$HOME/.scm_breeze/scm_breeze.sh"
+        # scm_breeze - lazy-load on first git alias use
+        if [ -s "$HOME/.scm_breeze/scm_breeze.sh" ]; then
+          _scm_breeze_init() {
+            # Unset all wrapper functions first
+            unset -f _scm_breeze_init g gs gc gpl gps gd gl gst gco ga gb gf gr
+            # Source SCM Breeze which will define the real aliases
+            source "$HOME/.scm_breeze/scm_breeze.sh"
+          }
+
+          # Most commonly used aliases - wrapper functions
+          g() { _scm_breeze_init && command git "$@"; }
+          gs() { _scm_breeze_init && git_status_shortcuts "$@"; }
+          gc() { _scm_breeze_init && command git commit "$@"; }
+          gpl() { _scm_breeze_init && command git pull "$@"; }
+          gps() { _scm_breeze_init && command git push "$@"; }
+          gd() { _scm_breeze_init && command git diff "$@"; }
+          gl() { _scm_breeze_init && command git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit "$@"; }
+          gst() { _scm_breeze_init && command git status "$@"; }
+          gco() { _scm_breeze_init && command git checkout "$@"; }
+          ga() { _scm_breeze_init && git_add_shortcuts "$@"; }
+          gb() { _scm_breeze_init && _scmb_git_branch_shortcuts "$@"; }
+          gf() { _scm_breeze_init && command git fetch "$@"; }
+          gr() { _scm_breeze_init && command git remote -v "$@"; }
+        fi
 
         # fzf
         [ -r "/usr/share/fzf/key-bindings.zsh" ] && \
@@ -274,12 +296,22 @@
         # OPAM
         [ -r ~/.opam/opan-init/init.zsh ] && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 
-        # conda
-        [ -r /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
+        # conda - lazy-load on first use
+        if [ -r /opt/miniconda3/etc/profile.d/conda.sh ]; then
+          conda() {
+            unset -f conda
+            source /opt/miniconda3/etc/profile.d/conda.sh
+            conda "$@"
+          }
+        fi
 
-        # asdf
-        if asdf current | grep -q 'golang.* true$' && [ -r ~/.asdf/plugins/golang/set-env.zsh ]; then
-          source ~/.asdf/plugins/golang/set-env.zsh
+        # asdf golang - lazy-load on first 'go' command
+        if command -v asdf &> /dev/null && asdf current | grep -q 'golang.* true$' && [ -r ~/.asdf/plugins/golang/set-env.zsh ]; then
+          go() {
+            unset -f go
+            source ~/.asdf/plugins/golang/set-env.zsh
+            go "$@"
+          }
         fi
 
         # zoxide
