@@ -25,12 +25,12 @@
     # History configuration
     history = {
       path = "$HOME/.histfile";
-      size = 2000;
-      save = 2000;
+      size = 20000;
+      save = 20000;
       ignoreDups = true;
       ignoreSpace = true;
       ignoreAllDups = true;
-      share = false; # APPEND_HISTORY instead of share
+      share = true;
       extended = false;
     };
 
