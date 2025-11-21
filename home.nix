@@ -22,13 +22,18 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
       statix
 
       asdf-vm
+      delta
       duf
+      fd
       grpcui
       grpcurl
       k9s
       luarocks
+      ripgrep
 
       glow
+      jq
+      yq-go
       lazygit
       aws-iam-authenticator
 
