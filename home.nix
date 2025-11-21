@@ -46,6 +46,8 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
     stateVersion = "25.05";
   };
 
+  programs.home-manager.enable = true;
+
   programs.neovim = {
     enable = true;
 
