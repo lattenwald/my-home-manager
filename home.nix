@@ -10,6 +10,7 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
   imports = [
     ./modules/shell/zsh.nix
     ./modules/claude-code.nix
+    ./modules/tmux.nix
   ];
 
   home = {

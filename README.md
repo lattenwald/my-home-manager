@@ -29,8 +29,9 @@ make help     # Show all targets
 <details>
 <summary>Managed Tools & Programs</summary>
 
-**Shell**
+**Shell & Terminal**
 - zsh (with autosuggestions, syntax-highlighting)
+- tmux (with resurrect plugin)
 - fzf (fuzzy finder)
 - zoxide (smart cd)
 - lsd (modern ls)
