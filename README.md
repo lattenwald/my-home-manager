@@ -25,3 +25,36 @@ make lint     # Lint .nix files
 make clean    # Run garbage collection
 make help     # Show all targets
 ```
+
+<details>
+<summary>Managed Tools & Programs</summary>
+
+**Shell**
+- zsh (with autosuggestions, syntax-highlighting)
+- fzf (fuzzy finder)
+- zoxide (smart cd)
+- lsd (modern ls)
+
+**Nix Tools**
+- nil (LSP)
+- nixpkgs-fmt (formatter)
+- statix (linter)
+
+**Development**
+- neovim
+- lazygit
+- delta (git diff viewer)
+- ripgrep, fd
+- jq, yq-go
+- asdf-vm
+
+**Kubernetes & AWS**
+- k9s
+- aws-iam-authenticator
+- grpcui, grpcurl
+
+**Claude Code**
+- Custom commands, skills, hooks (declaratively managed)
+- Navigator plugin auto-install
+
+</details>
