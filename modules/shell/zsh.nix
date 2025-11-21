@@ -136,17 +136,16 @@
         # SSH Auth Sock Setup
         # ------------------------------------------------------------------------------
 
-        if [ -n "$SSH_TTY" ]; then
+        # For SSH sessions: create stable symlink for tmux/screen persistence
+        if [ -n "$SSH_CONNECTION" ]; then
             AUTH_SOCK_LINK="$HOME/.ssh/auth_sock.$(hostname)"
-            AUTH_SOCK_LINKED=$(readlink "$AUTH_SOCK_LINK")
-            if ([ -z "$AUTH_SOCK_LINKED" ] || [ ! -S "$AUTH_SOCK_LINKED" ]) && [ -n "$SSH_AUTH_SOCK" ]; then
+            if [ -n "$SSH_AUTH_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
                 ln -sf "$SSH_AUTH_SOCK" "$AUTH_SOCK_LINK"
             fi
-            export SSH_AUTH_SOCK="$AUTH_SOCK_LINK"
+            if [ -S "$AUTH_SOCK_LINK" ]; then
+                export SSH_AUTH_SOCK="$AUTH_SOCK_LINK"
+            fi
             unset AUTH_SOCK_LINK
-            unset AUTH_SOCK_LINKED
-        else
-            export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
         fi
 
         # ------------------------------------------------------------------------------
