@@ -1,29 +1,7 @@
 ''
-  # Show latest stack lts
-  stack_lts() {
-      curl -v https://www.stackage.org/lts 2>&1 | grep Location | sed 's/.*\///'
-  }
-
   # Get LAN IP address
   lanip() {
       ip -4 addr show $(ip route get 8.8.8.8 | awk '{for(i=1;i<=NF;i++) if ($i=="dev") print $(i+1); exit}') | awk '/inet / {print $2}' | cut -d/ -f1
-  }
-
-  # Unregister broken GHC packages
-  ghc-pkg-clean() {
-      for p in `ghc-pkg check $* 2>&1  | grep problems | awk '{print $6}' | sed -e 's/:$//'`
-      do
-          echo unregistering $p; ghc-pkg $* unregister $p
-      done
-  }
-
-  # Remove all installed GHC/cabal packages
-  ghc-pkg-reset() {
-      read '?erasing all your user ghc and cabal packages - are you sure (y/n) ? ' ans
-      test "x$ans" = xy && ( \
-          echo 'erasing directories under ~/.ghc'; rm -rf `find ~/.ghc -maxdepth 1 -type d`; \
-          echo 'erasing ~/.cabal/lib'; rm -rf ~/.cabal/lib; \
-          )
   }
 
   # Show colors
@@ -38,19 +16,6 @@
           done
           echo
       done
-  }
-
-  # Text to speech
-  say() {
-    if [[ "$${1}" =~ -[a-z]{2} ]]
-    then
-      local lang=$${1#-}
-      local text="$${*#$1}"
-    else
-      local lang=$${LANG%_*}
-      local text="$*"
-    fi
-    mplayer "http://translate.google.com/translate_tts?ie=UTF-8&tl=$${lang}&q=$${text}" &> /dev/null
   }
 
   # Run command in first docker-compose service
@@ -145,4 +110,5 @@
         done
     }
   fi
+
 ''
