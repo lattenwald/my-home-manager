@@ -6,7 +6,7 @@ help:
 
 .PHONY: install
 install: ## First-time install: bootstrap home-manager via flake
-	nix run home-manager -- switch --impure --flake .#myProfile
+	nix run home-manager -- switch --impure --flake .#myProfile -b backup
 
 .PHONY: update
 update: completions ## Apply home-manager configuration
