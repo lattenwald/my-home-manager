@@ -39,6 +39,8 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
       aws-iam-authenticator
 
       luajitPackages.jsregexp
+
+      keychain
     ];
 
     inherit username homeDirectory;

@@ -161,6 +161,14 @@
           if [ -n "$SSH_CONNECTION" ]; then
               AUTH_SOCK_LINK="$HOME/.ssh/auth_sock.$(hostname)"
               if [ -n "$SSH_AUTH_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+                  # Use forwarded agent
+                  ln -sf "$SSH_AUTH_SOCK" "$AUTH_SOCK_LINK"
+              elif [ -S "/run/user/$(id -u)/gcr/ssh" ]; then
+                  # Fall back to local gcr-ssh-agent
+                  ln -sf "/run/user/$(id -u)/gcr/ssh" "$AUTH_SOCK_LINK"
+              elif command -v keychain >/dev/null; then
+                  # Fall back to keychain (VPS/servers)
+                  eval $(keychain --eval --agents ssh --quiet)
                   ln -sf "$SSH_AUTH_SOCK" "$AUTH_SOCK_LINK"
               fi
               if [ -S "$AUTH_SOCK_LINK" ]; then
