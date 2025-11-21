@@ -69,10 +69,9 @@
 
       # Environment variables (sourced in .zshenv)
       envExtra = ''
-        # Editor setup
-        which emacsclient > /dev/null && export VISUAL=emacsclient
-        which vim > /dev/null && export EDITOR=vim
-        which nvim > /dev/null && export EDITOR=nvim && export VISUAL=nvim
+        # Editor setup (nvim installed via home.packages)
+        export EDITOR=nvim
+        export VISUAL=nvim
 
         # Terminal colors
         export TERM=xterm-256color
