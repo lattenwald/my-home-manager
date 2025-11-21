@@ -116,18 +116,6 @@
       openssl s_client -CApath /etc/ssl/certs/ -showcerts -servername $host -connect $host:$port </dev/null | openssl x509 -text
   }
 
-  # AWS login helper function
-  _aws_login_with_venv() {
-      local prev_venv="$VIRTUAL_ENV"
-      source ~/ringcentral/aws_authenticator/venv/bin/activate
-      source ~/ringcentral/aws_authenticator/bin/aws_init.sh "$@"
-      if [[ -n "$prev_venv" ]]; then
-          source "$prev_venv/bin/activate"
-      else
-          deactivate
-      fi
-  }
-
   # Arch Linux specific functions
   if [[ -f /etc/arch-release ]]; then
     # Import and sign pacman keys

@@ -43,12 +43,6 @@
       RSYNC_RSH = "ssh";
       XDG_DATA_HOME = "$HOME/.config";
       BUN_INSTALL = "$HOME/.bun";
-      GTK_IM_MODULE = "ibus";
-      XMODIFIERS = "@im=ibus";
-      QT_IM_MODULE = "ibus";
-      QT_QPA_PLATFORMTHEME = "qt5ct";
-      TERMINAL = "alacritty";
-      DMENU = "rofi -dmenu";
     };
 
     # Environment variables (sourced in .zshenv)
@@ -124,6 +118,19 @@
       ''
         # If not running interactively, don't do anything
         [ -z "$PS1" ] && return
+
+        # ------------------------------------------------------------------------------
+        # Desktop environment
+        # ------------------------------------------------------------------------------
+
+        if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
+          export GTK_IM_MODULE="ibus"
+          export XMODIFIERS="@im=ibus"
+          export QT_IM_MODULE="ibus"
+          export QT_QPA_PLATFORMTHEME="qt5ct"
+          export TERMINAL="alacritty"
+          export DMENU="rofi -dmenu"
+        fi
 
         # ------------------------------------------------------------------------------
         # SSH Auth Sock Setup
@@ -321,6 +328,23 @@
 
         # API keys
         [[ -r ~/.api_keys ]] && source ~/.api_keys
+
+        # Work machine config
+        if [[ -f ~/.work-machine ]]; then
+          _aws_login_with_venv() {
+            local prev_venv="$VIRTUAL_ENV"
+            source ~/ringcentral/aws_authenticator/venv/bin/activate
+            source ~/ringcentral/aws_authenticator/bin/aws_init.sh "$@"
+            if [[ -n "$prev_venv" ]]; then
+              source "$prev_venv/bin/activate"
+            else
+              deactivate
+            fi
+          }
+
+          alias aws_login="_aws_login_with_venv -l 898590214673 -u aleksandr.kiusev -r core-media-2"
+          alias aws_login_hackathon="_aws_login_with_venv -l 387917828062 -u aleksandr.kiusev -r team-aidea-031-role"
+        fi
 
         # ------------------------------------------------------------------------------
         # Finalization

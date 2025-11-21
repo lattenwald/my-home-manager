@@ -48,8 +48,4 @@
 
   # Misc
   help = "run-help";
-
-  # AWS login aliases with function call
-  aws_login = "_aws_login_with_venv -l 898590214673 -u aleksandr.kiusev -r core-media-2";
-  aws_login_hackathon = "_aws_login_with_venv -l 387917828062 -u aleksandr.kiusev -r team-aidea-031-role";
 }
