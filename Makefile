@@ -18,7 +18,7 @@ completions: ## Generate shell completions for installed tools
 
 .PHONY: upgrade
 upgrade: completions ## Update flake inputs and apply changes
-	nix flake update && home-manager switch --impure --flake .#myProfile
+	nix flake update && home-manager switch --impure --flake .#myProfile && asdf reshim
 
 .PHONY: clean
 clean: ## Run garbage collection
