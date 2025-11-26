@@ -11,6 +11,9 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
     ./modules/shell/zsh.nix
     ./modules/claude-code.nix
     ./modules/tmux.nix
+    ./modules/git.nix
+    ./modules/bash.nix
+    ./modules/shell/starship.nix
   ];
 
   home = {
@@ -39,6 +42,9 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
       lazygit
       aws-iam-authenticator
 
+      gh
+      git-lfs
+
       luajitPackages.jsregexp
 
       keychain
@@ -47,18 +53,46 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
     inherit username homeDirectory;
 
     stateVersion = "25.05";
+
+    sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
   };
 
-  programs.home-manager.enable = true;
+  programs = {
+    home-manager.enable = true;
 
-  programs.neovim = {
-    enable = true;
+    neovim = {
+      enable = true;
+      extraLuaPackages = ps: [
+        ps.lyaml
+        ps.xml2lua
+        ps.mimetypes
+        ps.jsregexp
+      ];
+    };
 
-    extraLuaPackages = ps: [
-      ps.lyaml
-      ps.xml2lua
-      ps.mimetypes
-      ps.jsregexp
-    ];
+    readline = {
+      enable = true;
+      variables = {
+        meta-flag = true;
+        input-meta = true;
+        convert-meta = false;
+        output-meta = true;
+      };
+      bindings = {
+        "\\e[5~" = "history-search-backward";
+        "\\e[6~" = "history-search-forward";
+        "\\e[1~" = "beginning-of-line";
+        "\\e[4~" = "end-of-line";
+        "\\e[1;5C" = "forward-word";
+        "\\e[1;5D" = "backward-word";
+        "\\e[5C" = "forward-word";
+        "\\e[5D" = "backward-word";
+        "\\e\\e[C" = "forward-word";
+        "\\e\\e[D" = "backward-word";
+      };
+    };
   };
 }
