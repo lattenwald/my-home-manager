@@ -74,6 +74,12 @@ This skill validates code comments against best practices, ensuring comments add
    - Example: `// GetName returns name` for `func GetName() string`
    - **Fix**: Remove or add actual documentation
 
+6. **"Road Not Taken" Comparisons**
+   - Compares implemented approach to rejected alternatives
+   - Reader only sees what exists, not what was considered
+   - Example: `// Use file symlinks (simpler than programs.ssh)`
+   - **Fix**: Remove comparison - document decisions in ADRs/tasks, not inline
+
 ### ⚠️ Warning Signs
 
 1. **Length Violations**
@@ -190,6 +196,16 @@ ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 defer cancel()
 ```
 **Why Good**: Explains constraint and consequence (financial safety)
+
+---
+
+### Bad Comment (Road Not Taken)
+```nix
+# SSH config managed via file symlinks (simpler than programs.ssh)
+home.file.".ssh/config".source = ../files/ssh/config;
+```
+**Issue**: Compares to rejected alternative reader can't see
+**Fix**: Remove parenthetical - `# SSH config managed via file symlinks`
 
 ---
 
