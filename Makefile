@@ -35,3 +35,28 @@ lint: ## Lint all .nix files with statix
 .PHONY: news
 news: ## Show home-manager news
 	home-manager --impure --flake .#myProfile news
+
+# Machine marker targets
+.PHONY: gui
+gui: ## Mark as GUI machine (enables GUI apps and services)
+	@touch ~/.gui-machine
+	@echo "✅ Marked as GUI machine (~/.gui-machine created)"
+	@echo "➡️  Run 'make update' to apply"
+
+.PHONY: nogui
+nogui: ## Mark as non-GUI machine (disables GUI apps and services)
+	@rm -f ~/.gui-machine
+	@echo "✅ Marked as non-GUI machine (~/.gui-machine removed)"
+	@echo "➡️  Run 'make update' to apply"
+
+.PHONY: work
+work: ## Mark as work machine (enables work-specific configs)
+	@touch ~/.work-machine
+	@echo "✅ Marked as work machine (~/.work-machine created)"
+	@echo "➡️  Run 'make update' to apply"
+
+.PHONY: nowork
+nowork: ## Mark as personal machine (disables work-specific configs)
+	@rm -f ~/.work-machine
+	@echo "✅ Marked as personal machine (~/.work-machine removed)"
+	@echo "➡️  Run 'make update' to apply"

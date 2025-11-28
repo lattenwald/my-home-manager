@@ -93,6 +93,56 @@ home.packages = with pkgs; [
 3. Ask user to git-track the new file (required for flakes)
 4. Apply with `make update`
 
+### Machine-Type Markers
+
+This config uses marker files for conditional configuration:
+
+| Marker File | Purpose | Makefile Target |
+|-------------|---------|-----------------|
+| `~/.gui-machine` | Enable GUI apps/services | `make gui` / `make nogui` |
+| `~/.work-machine` | Enable work-specific configs | `make work` / `make nowork` |
+
+Detection pattern in Nix:
+```nix
+let
+  homeDirectory = builtins.getEnv "HOME";
+  isGuiMachine = builtins.pathExists "${homeDirectory}/.gui-machine";
+in
+lib.mkIf isGuiMachine { ... }
+```
+
+### Systemd User Services
+
+GUI services are managed in `modules/gui.nix` using `systemd.user.services`.
+
+**Important**: Use `wayland.target` (not `graphical-session.target`) - this is the active target on this system.
+
+Example service definition:
+```nix
+systemd.user.services.example = {
+  Unit = {
+    Description = "Example service";
+    After = [ "wayland.target" ];
+    PartOf = [ "wayland.target" ];
+  };
+  Service = {
+    Type = "simple";
+    ExecStart = "${pkgs.example}/bin/example";
+    Restart = "on-failure";
+    RestartSec = 5;
+  };
+  Install = {
+    WantedBy = [ "wayland.target" ];
+  };
+};
+```
+
+**Migrating manual services**:
+1. Stop and disable: `systemctl --user stop <service> && systemctl --user disable <service>`
+2. Remove old file: `rm ~/.config/systemd/user/<service>.service`
+3. Add to `gui.nix`
+4. Run `make update`
+
 ## Troubleshooting
 
 ### Common Issues
@@ -127,10 +177,12 @@ home-manager switch --impure --flake .#myProfile --show-trace
 
 - **flake.nix**: Flake configuration (inputs, outputs)
 - **home.nix**: Main Home Manager config (packages, programs)
-- **modules/shell/zsh.nix**: Zsh configuration (367 lines)
-- **modules/shell/zsh-aliases.nix**: Shell aliases (55+)
-- **modules/shell/zsh-functions.nix**: Custom functions (130 lines)
-- **Makefile**: Convenience commands (update, upgrade, fmt, lint, clean)
+- **modules/gui.nix**: GUI-specific config (conditional on `~/.gui-machine`)
+- **modules/git.nix**: Git config (conditional work/personal email)
+- **modules/shell/zsh.nix**: Zsh configuration
+- **modules/shell/zsh-aliases.nix**: Shell aliases
+- **modules/shell/zsh-functions.nix**: Custom functions
+- **Makefile**: Convenience commands (update, upgrade, fmt, lint, clean, gui, work)
 
 ## Makefile Targets
 
@@ -140,6 +192,10 @@ make upgrade  # Update flake inputs and apply
 make fmt      # Format all .nix files
 make lint     # Lint all .nix files
 make clean    # Garbage collection
+make gui      # Mark as GUI machine
+make nogui    # Mark as non-GUI machine
+make work     # Mark as work machine
+make nowork   # Mark as personal machine
 make help     # Show all targets
 ```
 
