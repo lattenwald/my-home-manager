@@ -23,6 +23,11 @@ make upgrade   # Update flake inputs and apply
 make help      # Show all targets
 ```
 
+## External Dependencies
+
+Some packages are installed externally with HM-managed config.
+See [EXTERNAL-DEPENDENCIES.md](EXTERNAL-DEPENDENCIES.md).
+
 <details>
 <summary>Managed Tools & Programs</summary>
 

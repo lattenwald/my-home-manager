@@ -62,6 +62,27 @@ When changes are ready to commit:
 - **Prefer declarative**: Add packages to `home.packages`, not imperative `nix-env -i`
 - **Modular organization**: Keep related config in separate module files
 
+### External Dependencies
+
+Some packages are installed outside Nix (cargo, system package manager) while Home Manager manages their config. See `EXTERNAL-DEPENDENCIES.md` for the list.
+
+**Why external installation?**
+- **GPU/Wayland apps**: Nix-built graphics apps can have EGL/driver conflicts with host system
+- **Version pinning**: Need specific version not in nixpkgs
+- **System library integration**: Better compatibility with host GPU drivers, audio, etc.
+
+**Config-only pattern** for externally-installed packages:
+```nix
+programs.<pkg> = {
+  enable = true;
+  package = pkgs.emptyDirectory;  # Don't install, just manage config
+  settings = { ... };
+};
+```
+
+**Current external packages**:
+- `alacritty` (GUI) - Cargo-installed due to Wayland/EGL issues with nix version (nixpkgs #148000)
+
 ### Configuration Changes
 
 When modifying configuration:
