@@ -1,0 +1,68 @@
+# vim: ft=sshconfig
+# -*- mode: conf -*-
+# Personal SSH hosts - managed via Home Manager XDG include
+
+# ─────────────────────────────────────────────────────────
+# lattenwald.org services (reverse tunnels on non-22 ports)
+# ─────────────────────────────────────────────────────────
+
+Host lattenwald.org
+Hostname lattenwald.org
+User user
+ServerAliveInterval 10
+ServerAliveCountMax 3
+
+Host bl
+Hostname 3.lattenwald.org
+User user
+ServerAliveInterval 10
+ServerAliveCountMax 3
+
+Host 3.lattenwald.org
+Hostname 3.lattenwald.org
+User user
+ServerAliveInterval 10
+ServerAliveCountMax 3
+
+Host chief
+Hostname lattenwald.org
+Port 2224
+User qalex
+LocalForward 5901 localhost:5901
+LocalForward 5902 localhost:5902
+
+Host pi
+Hostname lattenwald.org
+User pi
+Port 2055
+
+Host pi4
+Hostname lattenwald.org
+User pi
+Port 2057
+
+Host abra
+Hostname lattenwald.org
+Port 2292
+User qalex
+
+Host home
+Hostname lattenwald.org
+Port 2214
+User qalex
+
+# ─────────────────────────────────────────────────────────
+# VPS servers
+# ─────────────────────────────────────────────────────────
+
+Host ub
+Hostname 207.154.203.82
+User user
+
+Host ubb
+Hostname 165.227.245.48
+User user
+
+Host zeta
+Hostname 82.114.229.169
+User user
