@@ -15,7 +15,11 @@ in
 lib.mkIf isGuiMachine {
   home.packages = with pkgs; [
     shikane # Wayland display manager (config kept local - machine-specific)
+    swaynotificationcenter # Notification daemon
   ];
+
+  # SwayNC style (Catppuccin theme)
+  xdg.configFile."swaync/style.css".source = ../files/swaync/style.css;
 
   programs.alacritty = {
     enable = true;
@@ -138,6 +142,24 @@ lib.mkIf isGuiMachine {
       ExecStart = "${pkgs.shikane}/bin/shikane";
       Restart = "on-failure";
       RestartSec = 5;
+    };
+    Install = {
+      WantedBy = [ "wayland.target" ];
+    };
+  };
+
+  systemd.user.services.swaync = {
+    Unit = {
+      Description = "SwayNC notification daemon";
+      After = [ "wayland.target" ];
+      PartOf = [ "wayland.target" ];
+    };
+    Service = {
+      Type = "dbus";
+      BusName = "org.freedesktop.Notifications";
+      ExecStart = "${pkgs.swaynotificationcenter}/bin/swaync";
+      ExecReload = "${pkgs.swaynotificationcenter}/bin/swaync-client --reload-config ; ${pkgs.swaynotificationcenter}/bin/swaync-client --reload-css";
+      Restart = "on-failure";
     };
     Install = {
       WantedBy = [ "wayland.target" ];
