@@ -18,6 +18,11 @@ lib.mkIf isGuiMachine {
     swaynotificationcenter # Notification daemon
   ];
 
+  home.file.".local/bin/gammastep-update-location" = {
+    source = ../scripts/gammastep-update-location.sh;
+    executable = true;
+  };
+
   # SwayNC style (Catppuccin theme)
   xdg.configFile."swaync/style.css".source = ../files/swaync/style.css;
 
@@ -164,5 +169,17 @@ lib.mkIf isGuiMachine {
     Install = {
       WantedBy = [ "wayland.target" ];
     };
+  };
+
+  services.gammastep = {
+    enable = true;
+    provider = "manual";
+    latitude = 41.7;
+    longitude = 44.8;
+    temperature = {
+      day = 5500;
+      night = 3700;
+    };
+    tray = false;
   };
 }
