@@ -18,9 +18,10 @@ make install   # First-time bootstrap
 ## Usage
 
 ```bash
-make           # Apply configuration (default)
-make upgrade   # Update flake inputs and apply
-make help      # Show all targets
+make                  # Apply configuration (default)
+make upgrade          # Update flake inputs and apply
+make help             # Show all targets
+BACKUP=1 make update  # Backup conflicting files instead of failing
 ```
 
 ## External Dependencies

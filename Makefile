@@ -1,16 +1,19 @@
 .DEFAULT_GOAL := update
 
+# Set BACKUP=1 to backup conflicting files instead of failing
+HM_BACKUP_FLAG := $(if $(BACKUP),-b backup,)
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: install
 install: ## First-time install: bootstrap home-manager via flake
-	nix run home-manager -- switch --impure --flake .#myProfile -b backup
+	nix run home-manager -- switch --impure --flake .#myProfile $(HM_BACKUP_FLAG)
 
 .PHONY: update
 update: completions ## Apply home-manager configuration
-	home-manager switch --impure --flake .#myProfile
+	home-manager switch --impure --flake .#myProfile $(HM_BACKUP_FLAG)
 
 .PHONY: completions
 completions: ## Generate shell completions for installed tools
@@ -18,7 +21,7 @@ completions: ## Generate shell completions for installed tools
 
 .PHONY: upgrade
 upgrade: completions ## Update flake inputs and apply changes
-	nix flake update && home-manager switch --impure --flake .#myProfile && asdf reshim
+	nix flake update && home-manager switch --impure --flake .#myProfile $(HM_BACKUP_FLAG) && asdf reshim
 
 .PHONY: clean
 clean: ## Run garbage collection
