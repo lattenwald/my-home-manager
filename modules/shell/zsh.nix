@@ -126,11 +126,12 @@
       initContent = lib.mkMerge [
         # Commands before completion init (mkOrder 550 runs before compinit)
         (lib.mkOrder 550 ''
-          # Add custom completion paths to fpath
+          # Add completion paths to fpath
           fpath=(
+              /usr/share/zsh/vendor-completions   # Debian/Ubuntu
+              /usr/share/zsh/site-functions       # Arch Linux
+              ${pkgs.zsh-completions}/share/zsh/site-functions
               ~/.zsh/completion
-              ~/.zsh/zsh-completion
-              ~/.zsh/zsh-completions/src
               $fpath
           )
         '')

@@ -50,6 +50,8 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
       luajitPackages.jsregexp
 
       keychain
+
+      zsh-completions
     ];
 
     inherit username homeDirectory;
