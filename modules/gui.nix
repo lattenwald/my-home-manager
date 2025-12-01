@@ -136,38 +136,56 @@ lib.mkIf isGuiMachine {
     };
   };
 
-  systemd.user.services.shikane = {
-    Unit = {
-      Description = "shikane - Wayland display configuration";
-      After = [ "wayland.target" ];
-      PartOf = [ "wayland.target" ];
+  systemd.user.services = {
+    shikane = {
+      Unit = {
+        Description = "shikane - Wayland display configuration";
+        After = [ "wayland.target" ];
+        PartOf = [ "wayland.target" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.shikane}/bin/shikane";
+        Restart = "on-failure";
+        RestartSec = 5;
+      };
+      Install = {
+        WantedBy = [ "wayland.target" ];
+      };
     };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.shikane}/bin/shikane";
-      Restart = "on-failure";
-      RestartSec = 5;
-    };
-    Install = {
-      WantedBy = [ "wayland.target" ];
-    };
-  };
 
-  systemd.user.services.swaync = {
-    Unit = {
-      Description = "SwayNC notification daemon";
-      After = [ "wayland.target" ];
-      PartOf = [ "wayland.target" ];
+    swaync = {
+      Unit = {
+        Description = "SwayNC notification daemon";
+        After = [ "wayland.target" ];
+        PartOf = [ "wayland.target" ];
+      };
+      Service = {
+        Type = "dbus";
+        BusName = "org.freedesktop.Notifications";
+        ExecStart = "${pkgs.swaynotificationcenter}/bin/swaync";
+        ExecReload = "${pkgs.swaynotificationcenter}/bin/swaync-client --reload-config ; ${pkgs.swaynotificationcenter}/bin/swaync-client --reload-css";
+        Restart = "on-failure";
+      };
+      Install = {
+        WantedBy = [ "wayland.target" ];
+      };
     };
-    Service = {
-      Type = "dbus";
-      BusName = "org.freedesktop.Notifications";
-      ExecStart = "${pkgs.swaynotificationcenter}/bin/swaync";
-      ExecReload = "${pkgs.swaynotificationcenter}/bin/swaync-client --reload-config ; ${pkgs.swaynotificationcenter}/bin/swaync-client --reload-css";
-      Restart = "on-failure";
-    };
-    Install = {
-      WantedBy = [ "wayland.target" ];
+
+    # System binary - Nix version may have pipewire ABI issues
+    easyeffects = {
+      Unit = {
+        Description = "easyeffects (pipewire audio effects)";
+        After = [ "wayland.target" ];
+        PartOf = [ "wayland.target" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "/usr/bin/easyeffects --gapplication-service";
+      };
+      Install = {
+        WantedBy = [ "wayland.target" ];
+      };
     };
   };
 
