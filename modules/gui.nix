@@ -16,6 +16,14 @@ lib.mkIf isGuiMachine {
   home.packages = with pkgs; [
     shikane # Wayland display manager (config kept local - machine-specific)
     swaynotificationcenter # Notification daemon
+
+    # Wayland utilities (protocol/socket-based, safe with system compositor)
+    grim # Screenshot tool
+    slurp # Screen region selector
+    playerctl # MPRIS media controller
+    brightnessctl
+    networkmanager_dmenu
+    imagemagick # Screenshot blur in dolock.wayland
   ];
 
   home.file.".local/bin/gammastep-update-location" = {

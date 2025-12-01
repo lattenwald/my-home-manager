@@ -29,7 +29,6 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
       statix
 
       asdf-vm
-      delta
       duf
       fd
       grpcui

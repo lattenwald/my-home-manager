@@ -15,6 +15,20 @@ cargo install alacritty
 
 **HM config:** `programs.alacritty` with `package = pkgs.emptyDirectory`
 
+### sway / swayidle / swaylock / waybar
+
+Wayland compositor stack. System packages integrate better with XDG portals, polkit, dbus on non-NixOS.
+
+**Config:** `~/.config/sway/`, `~/.config/waybar/`, `~/.config/systemd/user/swayidle.service`
+
+### pavucontrol
+
+PulseAudio/PipeWire volume control. GTK app with system audio integration.
+
+### asusctl / supergfxctl
+
+ASUS laptop control (ROG features, GPU switching). Requires system service and kernel modules.
+
 ## Console Applications
 
 *None currently.*
