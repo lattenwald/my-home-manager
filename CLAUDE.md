@@ -64,12 +64,14 @@ When changes are ready to commit:
 
 ### External Dependencies
 
-Some packages are installed outside Nix (cargo, system package manager) while Home Manager manages their config. See `EXTERNAL-DEPENDENCIES.md` for the list.
+Some packages are installed outside Nix while Home Manager manages their config. See `EXTERNAL-DEPENDENCIES.md` for the list.
 
 **Why external installation?**
 - **GPU/Wayland apps**: Nix-built graphics apps can have EGL/driver conflicts with host system
 - **Version pinning**: Need specific version not in nixpkgs
 - **System library integration**: Better compatibility with host GPU drivers, audio, etc.
+
+**IMPORTANT**: Do not assume HOW external packages are installed. Installation methods vary widely: apt, pacman, yum, dnf, brew, cargo, go install, npm, pacstall, manual builds, etc. Just use the binary name (e.g., `"alacritty"`) and let PATH resolution find it.
 
 **Config-only pattern** for externally-installed packages:
 ```nix
@@ -81,7 +83,7 @@ programs.<pkg> = {
 ```
 
 **Current external packages**:
-- `alacritty` (GUI) - Cargo-installed due to Wayland/EGL issues with nix version (nixpkgs #148000)
+- `alacritty` (GUI) - Externally-installed due to Wayland/EGL issues with nix version (nixpkgs #148000)
 
 ### Configuration Changes
 

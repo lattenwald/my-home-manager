@@ -136,6 +136,15 @@ lib.mkIf isGuiMachine {
     };
   };
 
+  programs.rofi = {
+    enable = true;
+    terminal = "alacritty";
+    extraConfig = {
+      sort = true;
+      ssh-command = "{terminal} -e {ssh-client} {host}";
+    };
+  };
+
   systemd.user.services = {
     shikane = {
       Unit = {
