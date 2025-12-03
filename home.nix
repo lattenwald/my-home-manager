@@ -29,22 +29,25 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
       statix
 
       asdf-vm
+      bat
+      csvlens
+      dua
       duf
       fd
       grpcui
       grpcurl
       k9s
       luarocks
+      mdsh
       ripgrep
+      selene
+      trippy
 
       glow
       jq
       yq-go
       lazygit
       aws-iam-authenticator
-
-      gh
-      git-lfs
 
       luajitPackages.jsregexp
 
