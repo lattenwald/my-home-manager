@@ -16,6 +16,7 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
     ./modules/shell/starship.nix
     ./modules/gui.nix
     ./modules/ssh.nix
+    ./modules/work.nix
   ];
 
   home = {

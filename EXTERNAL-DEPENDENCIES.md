@@ -31,7 +31,15 @@ ASUS laptop control (ROG features, GPU switching). Requires system service and k
 
 ## Console Applications
 
-*None currently.*
+### secret-tool (libsecret)
+
+CLI for GNOME Keyring / Secret Service. Used by `rcsh` function for password retrieval.
+
+**Install:**
+- Ubuntu/Debian: `apt install libsecret-tools`
+- Arch: `pacman -S libsecret`
+
+**Usage:** `secret-tool store/lookup` - no HM config needed
 
 ---
 
