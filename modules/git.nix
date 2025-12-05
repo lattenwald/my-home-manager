@@ -1,9 +1,11 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
   homeDirectory = builtins.getEnv "HOME";
   isWorkMachine = builtins.pathExists "${homeDirectory}/.work-machine";
 in
 {
+  home.packages = [ pkgs.tig ];
+
   programs = {
     git = {
       enable = true;
@@ -63,6 +65,16 @@ in
     gh = {
       enable = true;
       gitCredentialHelper.enable = true;
+    };
+
+    lazygit = {
+      enable = true;
+      settings = {
+        os = {
+          edit = ''[ -z "$NVIM" ] && nvim -- {{filename}} || (nvim --server "$NVIM" --remote-send "q" && nvim --server "$NVIM" --remote {{filename}})'';
+          editAtLine = ''[ -z "$NVIM" ] && nvim +{{line}} -- {{filename}} || (nvim --server "$NVIM" --remote-send "q" && nvim --server "$NVIM" --remote +{{line}} {{filename}})'';
+        };
+      };
     };
   };
 }

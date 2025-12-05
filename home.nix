@@ -47,7 +47,6 @@ assert lib.assertMsg (builtins.pathExists homeDirectory) "Home directory ${homeD
       glow
       jq
       yq-go
-      lazygit
       aws-iam-authenticator
 
       luajitPackages.jsregexp
